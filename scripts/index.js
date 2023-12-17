@@ -31,12 +31,12 @@ const fillCard = (cardElement, deleteFunc, cardImage, cardTitle) => {
   const cardAlt = "Картинка " + cardTitle;
 
   cardElement.querySelector(".card__image").src =
-    cardImage || errorMessage("Error: image src variable is empty");
+    cardImage || throwErrorMessage("Error: image src variable is empty");
 
   cardElement.querySelector(".card__image").alt = cardAlt;
 
   cardElement.querySelector(".card__title").textContent =
-    cardTitle || errorMessage("Error: title variable is empty");
+    cardTitle || throwErrorMessage("Error: title variable is empty");
 
   deleteButton.addEventListener("click", () => {
     deleteFunc(deleteButton);
@@ -67,7 +67,7 @@ const summonCards = (arr) => {
       return cardsWrapper.append(card);
     });
   } else {
-    errorMessage("Error: arr cards is not a valid");
+    throwErrorMessage("Error: arr cards is not a valid");
   }
 };
 
