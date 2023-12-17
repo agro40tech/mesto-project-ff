@@ -15,7 +15,7 @@ const cardTemplate = document.querySelector("#card-template").content;
 const cardsWrapper = document.querySelector(".places__list");
 
 // Функция сообщения об ошибки
-const errorMessage = (message = "Error: empty message") => {
+const throwErrorMessage = (message = "Error: empty message") => {
   throw new Error(message);
 };
 
@@ -25,7 +25,7 @@ const createElementCard = () => {
 };
 
 // Функция наполнения каротчки данными
-const fillCard = (cardElement, cardImage, cardTitle) => {
+const fillCard = (cardElement, deleteFunc, cardImage, cardTitle) => {
   const deleteButton = cardElement.querySelector(".card__delete-button");
 
   const cardAlt = "Картинка " + cardTitle;
@@ -39,16 +39,16 @@ const fillCard = (cardElement, cardImage, cardTitle) => {
     cardTitle || errorMessage("Error: title variable is empty");
 
   deleteButton.addEventListener("click", () => {
-    deleteCard(deleteButton);
+    deleteFunc(deleteButton);
   });
 
   return cardElement;
 };
 
 // Функция создания карточки
-const createCard = (cardImage, cardTitle) => {
+const createCard = (deleteFunc, cardImage, cardTitle) => {
   const cardElement = createElementCard();
-  fillCard(cardElement, cardImage, cardTitle);
+  fillCard(cardElement, deleteFunc, cardImage, cardTitle);
 
   return cardElement;
 };
@@ -63,7 +63,7 @@ const deleteCard = (button) => {
 const summonCards = (arr) => {
   if (arr) {
     arr.forEach((element) => {
-      const card = createCard(element.link, element.name);
+      const card = createCard(deleteCard, element.link, element.name);
       return cardsWrapper.append(card);
     });
   } else {
