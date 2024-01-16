@@ -17,8 +17,8 @@ const addCardPopUpButton = document.querySelector(".profile__add-button");
 // Вызываем сборку всех карточек
 summonCards(initialCards);
 
-// Вешаем слушатель открытия на popup редактирования профиля
+// Вешаем слушатель открытия popup редактирования профиля
 useEventListener(editProfileButton, openModal, editProfilePopUp);
 
-// Вешаем слушателб открытия на popup добавления новой карточки
+// Вешаем слушатель открытия popup добавления новой карточки
 useEventListener(addCardPopUpButton, openModal, addCardPopUp);
