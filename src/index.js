@@ -1,15 +1,13 @@
 import "./pages/index.css";
 
 import initialCards from "./components/data/cards";
-import summonCards from "./components/card/summon__cards";
-import openModal from "./components/modal/open__modal";
 
 import useEventListener from "./components/hooks/use__event__listener";
 import useQuerySelector from "./components/hooks/use__query__selector";
 import formSubmitHandler from "./components/handlers/form__submit__handler";
-import closeModal from "./components/modal/close__modal";
-import createCard from "./components/card/create__card";
-import cardsWrapper from "./components/card/blocks/cards__wrapper";
+
+import { createCard, cardsWrapper, summonCards } from "./components/card";
+import { openModal, closeModal } from "./components/modal";
 
 // Edit profile Popup
 const elementPopUpEdit = useQuerySelector(".popup_type_edit");
@@ -68,6 +66,9 @@ formNewPlace.addEventListener("submit", (e) => {
   //   Создаем карточку и пушим в начало обертки карточек
   const card = createCard(linkNewPlace.value, nameNewPlace.value);
   cardsWrapper.prepend(card);
+
+  linkNewPlace.value = "";
+  nameNewPlace.value = "";
 
   closeModal(elementPopUpAddCard);
 });

@@ -1,8 +1,21 @@
-import useEventListener from "../hooks/use__event__listener";
 import closeModalHandler from "../handlers/close__modal__handler";
 import useQuerySelector from "../hooks/use__query__selector";
+import useEventListener from "../hooks/use__event__listener";
 
-const openModal = (element, event = false) => {
+export const closeModal = (element) => {
+  element.classList.remove("popup_is-opened");
+  setTimeout(() => {
+    element.classList.remove("popup_is-animated");
+  }, 300);
+
+  element.removeEventListener("click", useEventListener(element, closeModalHandler, element, true));
+  element.removeEventListener(
+    "keydown",
+    useEventListener(document, closeModalHandler, element, true, "keydown")
+  );
+};
+
+export const openModal = (element, event = false) => {
   element.classList.add("popup_is-animated");
   setTimeout(() => {
     element.classList.add("popup_is-opened");
@@ -34,5 +47,3 @@ const openModal = (element, event = false) => {
     }
   }
 };
-
-export default openModal;

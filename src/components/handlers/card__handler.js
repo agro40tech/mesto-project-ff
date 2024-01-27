@@ -1,5 +1,5 @@
-import deleteCard from "../card/delete__card";
-import openModal from "../modal/open__modal";
+import { deleteCard } from "../card";
+import { openModal } from "../modal";
 
 const cardHandler = (element, event) => {
   if (event.target.classList.contains("card__delete-button")) {

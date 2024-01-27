@@ -1,4 +1,4 @@
-import closeModal from "../modal/close__modal";
+import { closeModal } from "../modal";
 
 const closeModalHandler = (element, event) => {
   // Закрываем если кликнули на крестик
