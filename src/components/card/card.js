@@ -1,12 +1,13 @@
-import throwErrorMessage from "../errors/throw__error";
-import useEventListener from "../hooks/use__event__listener";
-import cardHandler from "../handlers/card__handler";
-
 // Темлейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
 
 // Обертка для карточек
 export const cardsWrapper = document.querySelector(".places__list");
+
+// Функция сообщения об ошибки
+const throwErrorMessage = (message = "Error: empty message") => {
+  throw new Error(message);
+};
 
 // Функция создания элемента карточки
 const createElementCard = () => {
@@ -14,7 +15,7 @@ const createElementCard = () => {
 };
 
 // Функция наполнения каротчки данными
-const fillCard = (cardElement, cardImage, cardTitle) => {
+const fillCard = (cardElement, cardImage, cardTitle, openModal) => {
   const cardAlt = "Картинка " + cardTitle;
 
   cardElement.querySelector(".card__image").src =
@@ -25,15 +26,34 @@ const fillCard = (cardElement, cardImage, cardTitle) => {
   cardElement.querySelector(".card__title").textContent =
     cardTitle || throwErrorMessage("Error: title variable is empty");
 
-  useEventListener(cardElement, cardHandler, cardElement, true);
+  cardElement.addEventListener("click", (event) => {
+    if (event.target.classList.contains("card__delete-button")) {
+      deleteCard(cardElement);
+    }
+
+    if (event.target.classList.contains("card__image")) {
+      const imagePopUp = document.querySelector(".popup_type_image");
+      openModal(imagePopUp, event);
+    }
+
+    if (event.target.classList.contains("card__like-button")) {
+      const buttonCardLike = cardElement.querySelector(".card__like-button");
+
+      if (buttonCardLike.classList.contains("card__like-button_is-active")) {
+        buttonCardLike.classList.remove("card__like-button_is-active");
+      } else {
+        buttonCardLike.classList.add("card__like-button_is-active");
+      }
+    }
+  });
 
   return cardElement;
 };
 
 // Функция создания карточки
-export const createCard = (cardImage, cardTitle) => {
+export const createCard = (cardImage, cardTitle, openModal) => {
   const cardElement = createElementCard();
-  fillCard(cardElement, cardImage, cardTitle);
+  fillCard(cardElement, cardImage, cardTitle, openModal);
 
   return cardElement;
 };
@@ -45,10 +65,10 @@ export const deleteCard = (button) => {
 };
 
 // Функция размещения всех карточек в html
-export const summonCards = (arr) => {
+export const summonCards = (arr, openModal) => {
   if (arr) {
     arr.forEach((element) => {
-      const card = createCard(element.link, element.name);
+      const card = createCard(element.link, element.name, openModal);
       return cardsWrapper.append(card);
     });
   } else {
