@@ -2,7 +2,7 @@ import "./pages/index.css";
 
 import initialCards from "./components/card/cards";
 
-import { createCard, deleteCard, cardsWrapper, summonCards } from "./components/card/card";
+import { createCard, deleteCard, cardsWrapper, cardLikeHandle } from "./components/card/card";
 import { openModal, closeModal } from "./components/modal/modal";
 
 // Объявляем элементы popup-ов
@@ -36,56 +36,32 @@ elementPopUpEdit.classList.add("popup_is-animated");
 elementPopUpAddCard.classList.add("popup_is-animated");
 elementImagePopUp.classList.add("popup_is-animated");
 
-// Вешаем слушатели закрытий на все popup-ы
-elementPopUpEdit.addEventListener("click", (event) => {
-  if (event.target.classList.contains("popup__close")) {
-    closeModal(elementPopUpEdit);
-  }
+document.querySelectorAll(".popup__close").forEach((button) => {
+  const popup = button.closest(".popup");
 
-  if (event.target.classList.contains("popup")) {
-    closeModal(elementPopUpEdit);
-  }
+  button.addEventListener("click", () => closeModal(popup));
+
+  popup.addEventListener("mousedown", (event) => {
+    if (event.target.classList.contains("popup")) {
+      closeModal(popup);
+    }
+  });
 });
-
-elementPopUpAddCard.addEventListener("click", (event) => {
-  if (event.target.classList.contains("popup__close")) {
-    closeModal(elementPopUpAddCard);
-  }
-
-  if (event.target.classList.contains("popup")) {
-    closeModal(elementPopUpAddCard);
-  }
-});
-
-elementImagePopUp.addEventListener("click", (event) => {
-  if (event.target.classList.contains("popup__close")) {
-    closeModal(elementImagePopUp);
-  }
-
-  if (event.target.classList.contains("popup")) {
-    closeModal(elementImagePopUp);
-  }
-});
-
-// Хендлер для ивента лайка карточки
-const cardLikeHandle = (cardElement) => {
-  cardElement.querySelector(".card__like-button").classList.toggle("card__like-button_is-active");
-};
 
 // Хендлер для открытия popUp-а карточки
-const cardPopUpHandle = (event) => {
+const cardPopUpHandle = (cardImage, cardTitle) => {
   openModal(elementImagePopUp);
 
-  popUpImage.src = event.target.currentSrc;
-  popUpImage.alt = event.target.alt;
-  popUpCaption.textContent = event.target.offsetParent.querySelector(".card__title").textContent;
+  popUpImage.src = cardImage;
+  popUpImage.alt = cardTitle;
+  popUpCaption.textContent = cardTitle;
 };
 
 // Вызываем сборку всех карточек
 initialCards.forEach((element) => {
   const card = createCard(element.link, element.name, deleteCard, cardLikeHandle, cardPopUpHandle);
 
-  summonCards(card);
+  cardsWrapper.append(card);
 });
 
 // Вешаем слушатель открытия popup-а редактирования профиля

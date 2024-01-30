@@ -20,8 +20,8 @@ export const createCard = (cardImage, cardTitle, deleteCard, cardLikeHandle, car
   cardElement.querySelector(".card__title").textContent = cardTitle;
 
   // Вешаем слушатель на картинку карточки
-  cardElementImage.addEventListener("click", (event) => {
-    cardPopUpHandle(event);
+  cardElementImage.addEventListener("click", () => {
+    cardPopUpHandle(cardImage, cardTitle);
   });
 
   // Вешаем слушатель на кнопку удаления карточки
@@ -42,7 +42,7 @@ export const deleteCard = (element) => {
   element.remove();
 };
 
-// Функция размещения всех карточек в html
-export const summonCards = (card) => {
-  return cardsWrapper.append(card);
+// Хендлер для ивента лайка карточки
+export const cardLikeHandle = (cardElement) => {
+  cardElement.querySelector(".card__like-button").classList.toggle("card__like-button_is-active");
 };
