@@ -1,9 +1,14 @@
 import "./pages/index.css";
 
-import initialCards from "./components/card/cards";
-
 import { createCard, deleteCard, cardsWrapper, cardLikeHandle } from "./components/card/card";
 import { openModal, closeModal } from "./components/modal/modal";
+import {
+  clearValidation,
+  enableValidation,
+  toggleSubmitButton,
+  validationConfig,
+} from "./components/validation/validation";
+import { getInitialCards } from "./components/api/api";
 
 // Объявляем элементы popup-ов
 const elementPopUpEdit = document.querySelector(".popup_type_edit");
@@ -36,17 +41,24 @@ elementPopUpEdit.classList.add("popup_is-animated");
 elementPopUpAddCard.classList.add("popup_is-animated");
 elementImagePopUp.classList.add("popup_is-animated");
 
-document.querySelectorAll(".popup__close").forEach((button) => {
-  const popup = button.closest(".popup");
+getInitialCards()
+  .then((result) => {
+    // Вызываем сборку всех карточек
+    result.forEach((element) => {
+      const card = createCard(
+        element.link,
+        element.name,
+        deleteCard,
+        cardLikeHandle,
+        cardPopUpHandle
+      );
 
-  button.addEventListener("click", () => closeModal(popup));
-
-  popup.addEventListener("mousedown", (event) => {
-    if (event.target.classList.contains("popup")) {
-      closeModal(popup);
-    }
+      cardsWrapper.append(card);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
   });
-});
 
 // Хендлер для открытия popUp-а карточки
 const cardPopUpHandle = (cardImage, cardTitle) => {
@@ -57,11 +69,21 @@ const cardPopUpHandle = (cardImage, cardTitle) => {
   popUpCaption.textContent = cardTitle;
 };
 
-// Вызываем сборку всех карточек
-initialCards.forEach((element) => {
-  const card = createCard(element.link, element.name, deleteCard, cardLikeHandle, cardPopUpHandle);
+document.querySelectorAll(".popup__close").forEach((button) => {
+  const popup = button.closest(".popup");
+  const popupForm = popup.querySelector(".popup__form");
 
-  cardsWrapper.append(card);
+  button.addEventListener("click", () => {
+    closeModal(popup);
+    clearValidation(popupForm, validationConfig, toggleSubmitButton);
+  });
+
+  popup.addEventListener("mousedown", (event) => {
+    if (event.target.classList.contains("popup")) {
+      closeModal(popup);
+      clearValidation(popupForm, validationConfig, toggleSubmitButton);
+    }
+  });
 });
 
 // Вешаем слушатель открытия popup-а редактирования профиля
@@ -86,6 +108,7 @@ formPopUpEdit.addEventListener("submit", (event) => {
 
   //   Закрываем модальное окно
   closeModal(elementPopUpEdit);
+  clearValidation(elementPopUpEdit, validationConfig, toggleSubmitButton);
 });
 
 // Добавление обработчика событий к форме добавления новой карточки
@@ -107,4 +130,7 @@ formNewPlace.addEventListener("submit", (event) => {
   nameNewPlace.value = "";
 
   closeModal(elementPopUpAddCard);
+  clearValidation(elementPopUpAddCard, validationConfig, toggleSubmitButton);
 });
+
+enableValidation(validationConfig, toggleSubmitButton);
