@@ -14,14 +14,13 @@ export const createCard = (
   cardImage,
   cardTitle,
   deleteCard,
-  cardLikeHandle,
+  requestLike,
   cardPopUpHandle,
   arrLikes,
   isOwner,
   cardID,
-  setLike,
-  unSetLike,
-  isLike
+  isLike,
+  cardLikeHandle
 ) => {
   const cardElement = createElementCard();
 
@@ -49,13 +48,7 @@ export const createCard = (
   } else {
     // Вешаем слушатель на кнопку удаления карточки
     cardElementDeleteButton.addEventListener("click", () => {
-      deleteCard(cardID)
-        .then(() => {
-          cardElement.remove();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      deleteCard(cardID, cardElement);
     });
   }
 
@@ -66,21 +59,9 @@ export const createCard = (
   // Вешаем слушатель на кнопку лайка карточки
   cardElement.querySelector(".card__like-button").addEventListener("click", (event) => {
     if (event.target.classList.contains("card__like-button_is-active")) {
-      unSetLike(cardID)
-        .then((result) => {
-          cardLikeHandle(cardElement, result.likes);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      requestLike(true, cardID, cardElement);
     } else {
-      setLike(cardID)
-        .then((result) => {
-          cardLikeHandle(cardElement, result.likes);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      requestLike(false, cardID, cardElement);
     }
   });
 

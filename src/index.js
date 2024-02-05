@@ -18,6 +18,7 @@ import {
   setLike,
   unSetLike,
 } from "./components/api/api";
+import { defaultMessage, loadingMessage } from "./components/data/constants";
 
 // Объявляем элементы popup-ов
 const elementPopUpEdit = document.querySelector(".popup_type_edit");
@@ -51,9 +52,6 @@ const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileAvatar = document.querySelector(".profile__image");
 
-const loadingMessage = "Сохранение...";
-const defaultMessage = "Сохранить";
-
 // Добавляем класс animated на все popup-ы
 elementPopUpEdit.classList.add("popup_is-animated");
 elementPopUpAddCard.classList.add("popup_is-animated");
@@ -71,10 +69,40 @@ const promiseGetCards = new Promise((resolve) => {
   resolve(data);
 });
 
+const deleteCardHandle = (cardID, cardElement) => {
+  deleteCard(cardID)
+    .then(() => {
+      cardElement.remove();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const requestLikeHandle = (isActiveLike, cardID, cardElement) => {
+  if (isActiveLike) {
+    unSetLike(cardID)
+      .then((result) => {
+        cardLikeHandle(cardElement, result.likes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    setLike(cardID)
+      .then((result) => {
+        cardLikeHandle(cardElement, result.likes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+};
+
 // Делаем запросы
 Promise.all([promiseGetUserData, promiseGetCards])
   .then(([resultGetUserData, resultGetCards]) => {
-    // Меняем данные карточки
+    // Меняем данные профя
     profileAvatar.style.backgroundImage = `url(${resultGetUserData.avatar})`;
     profileTitle.textContent = resultGetUserData.name;
     profileDescription.textContent = resultGetUserData.about;
@@ -99,15 +127,14 @@ Promise.all([promiseGetUserData, promiseGetCards])
       const card = createCard(
         element.link,
         element.name,
-        deleteCard,
-        cardLikeHandle,
+        deleteCardHandle,
+        requestLikeHandle,
         cardPopUpHandle,
         element.likes,
         isOwner,
         element._id,
-        setLike,
-        unSetLike,
-        isLike
+        isLike,
+        cardLikeHandle
       );
 
       cardsWrapper.append(card);
@@ -201,14 +228,14 @@ formNewPlace.addEventListener("submit", (event) => {
       const card = createCard(
         result.link,
         result.name,
-        deleteCard,
-        cardLikeHandle,
+        deleteCardHandle,
+        requestLikeHandle,
         cardPopUpHandle,
         result.likes,
         true,
         result._id,
-        setLike,
-        unSetLike
+        false,
+        cardLikeHandle
       );
 
       cardsWrapper.prepend(card);
@@ -220,8 +247,7 @@ formNewPlace.addEventListener("submit", (event) => {
       buttonSubmit.textContent = defaultMessage;
     });
 
-  linkNewPlace.value = "";
-  nameNewPlace.value = "";
+  formNewPlace.reset();
 
   closeModal(elementPopUpAddCard);
   clearValidation(elementPopUpAddCard, validationConfig, toggleSubmitButton);
@@ -245,7 +271,7 @@ formChangeAvatar.addEventListener("submit", (event) => {
       buttonSubmit.textContent = defaultMessage;
     });
 
-  linkNewAvatar.value = "";
+  formChangeAvatar.reset();
 
   closeModal(elementAvatarPopUp);
   clearValidation(elementAvatarPopUp, validationConfig, toggleSubmitButton);

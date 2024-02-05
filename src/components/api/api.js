@@ -6,15 +6,19 @@ const config = {
   },
 };
 
+const validResData = (res) => {
+  if (res.ok) {
+    return res.json();
+  }
+
+  return Promise.reject(`Ошибка: ${res.status}`);
+};
+
 export const getInitialCards = async () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -27,11 +31,7 @@ export const addNewCard = async (name, link) => {
       link: link,
     }),
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -40,11 +40,7 @@ export const deleteCard = async (idCard) => {
     method: "DELETE",
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -53,11 +49,7 @@ export const setLike = async (idCard) => {
     method: "PUT",
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -66,11 +58,7 @@ export const unSetLike = async (idCard) => {
     method: "DELETE",
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -78,11 +66,7 @@ export const getUserData = async () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -95,11 +79,7 @@ export const changeUserData = async (changeName, changeAbout) => {
       about: changeAbout,
     }),
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
 
@@ -111,10 +91,6 @@ export const changeAvatar = async (linkAvatar) => {
       avatar: linkAvatar,
     }),
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return validResData(res);
   });
 };
